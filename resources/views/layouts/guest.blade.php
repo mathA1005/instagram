@@ -27,12 +27,7 @@
                     <span>InstaMath</span>
                 </a>
             </div>
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('login') }}"
-                   class="font-semibold text-gray-700 hover:text-emerald-600 transition">Login</a>
-                <a href="{{ route('register') }}"
-                   class="font-semibold text-gray-700 hover:text-emerald-600 transition">Register</a>
-            </div>
+
 
         </nav>
 

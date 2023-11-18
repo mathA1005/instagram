@@ -17,7 +17,7 @@ use App\Http\Controllers\HomepageController;
 */
 
 
-Route::get('/', [HomepageController::class, 'index']);
+Route::middleware(['auth', 'verified'])->get('/', [HomepageController::class, 'index'])->name('index');
 
 
 Route::get('/dashboard', function () {

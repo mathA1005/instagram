@@ -17,12 +17,14 @@ use App\Http\Controllers\HomepageController;
 */
 
 
-Route::middleware(['auth', 'verified'])->get('/', [HomepageController::class, 'index'])->name('index');
+Route::get('/', [\App\Http\Controllers\HomepageController::class, 'index']);
 
-
+Route::middleware(['auth', 'verified'])->get('/feed', [\App\Http\Controllers\FeedController::class, 'feed'])->name('feed');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

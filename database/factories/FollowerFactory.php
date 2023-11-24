@@ -24,7 +24,7 @@ class FollowerFactory extends Factory
     {
         return [
             'follower_id' => User::all()->random()->id,
-            'followed_id' => User::all()->random()->id,
+            'following_id' => User::all()->random()->id,
         ];
     }
 }

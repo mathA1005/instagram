@@ -26,6 +26,8 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'profile_photo' => 'path/to/default/photo.jpg', // Remplacez par le chemin par défaut de la photo de profil
+            'bio' => $this->faker->paragraph, // Génère une biographie aléatoire
         ];
     }
 

@@ -14,18 +14,8 @@ class FollowerSeeder extends Seeder
      */
     public function run(): void
     {
-        Follower::truncate();
-
-        // Générer des données de followers aléatoires
-        $followersCount = 50; // Vous pouvez ajuster le nombre de followers souhaité
-
-        for ($i = 0; $i < $followersCount; $i++) {
-            $follower = User::all()->random();
-            $followed = User::where('id', '!=', $follower->id)->get()->random();
-
-            Follower::create([
-                'follower_id' => $follower->id,
-                'followed_id' => $followed->id,
-            ]);
-        }
-    }}
+        Follower::factory()
+            ->count(50)
+            ->create();
+    }
+}

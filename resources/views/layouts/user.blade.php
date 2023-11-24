@@ -26,17 +26,16 @@
                         class="w-10 h-10 fill-current text-gray-500 group-hover:text-emerald-500 transition" />
                     <span>InstaMath</span>
                 </a>
-                <div class="flex items-center space-x-4" onclick="goToProfile()">
-                    <img src="https://placekitten.com/100/100" alt="Profile Picture" class="rounded-full w-10 h-10 mr-2">
 
-                    </div>
 
             </div>
             <div class="flex items-center space-x-4">
                 <a href="{{ route('profile.update') }}"
 
                 class="font-medium text-gray-600 hover:text-gray-500 transition">{{ Auth::user()->name }}</a>
-            </div>
+                    <img src="https://placekitten.com/100/100" alt="Profile Picture" class="rounded-full w-10 h-10 mr-2">
+
+                </div>
             <div>
                 <form action="{{ route('logout') }}" method="post">
                     @csrf

@@ -16,7 +16,6 @@
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
-<div class="min-h-screen flex flex-col pt-6 sm:pt-0 bg-gray-100 ">
     <div class="container mx-auto flex flex-col space-y-10">
         <nav class="flex justify-between items-center py-2">
             <div>
@@ -39,7 +38,7 @@
         </nav>
 
         <main>
-            <div class="grid grid-cols-1 gap-8">
+            <div class="grid grid-cols-1">
                 {{ $slot }}
             </div>
         </main>

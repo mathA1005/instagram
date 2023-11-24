@@ -14,7 +14,7 @@
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('posts.store') }}" class="flex flex-col space-y-4 text-gray-500">
+            <form method="POST" action="{{ route('posts.store') }}" class="flex flex-col space-y-4 text-gray-500" enctype="multipart/form-data">
 
                 @csrf
 
@@ -23,6 +23,10 @@
                     <x-text-input id="title" class="block mt-1 w-full" type="text" name="title"
                                   :value="old('title')" autofocus />
                     <x-input-error :messages="$errors->get('title')" class="mt-2" />
+                </div>
+                <div>
+                    <label for="'image">image</label>
+                    <input type="file" id="image" name="image">
                 </div>
 
                 <div>

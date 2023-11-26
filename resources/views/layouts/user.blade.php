@@ -24,19 +24,19 @@
                    class="group font-bold text-4xl flex items-center space-x-4 hover:text-emerald-600 transition ">
                     <x-application-logo
                         class="w-10 h-10 fill-current text-gray-500 group-hover:text-emerald-500 transition" />
-                    <span>InstaMath</span>
+                    <span class="font-serif">InstaMath</span>
                 </a>
 
 
             </div>
             <div class="flex items-center space-x-4">
-                <a href="{{ route('profile.update') }}"
-
-                class="font-medium text-gray-600 hover:text-gray-500 transition">{{ Auth::user()->name }}</a>
-                    <img src="https://placekitten.com/100/100" alt="Profile Picture" class="rounded-full w-10 h-10 mr-2">
-
-                </div>
+                <a href="{{ route('profile.update') }}" class="flex items-center font-medium text-gray-600 hover:text-gray-500 transition">
+                    <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" alt="Photo de profil" class="w-10 h-10 rounded-full">
+                    {{ Auth::user()->name }}
+                </a>
+            </div>
             <div>
+
                 <form action="{{ route('logout') }}" method="post">
                     @csrf
                     <button type="submit"

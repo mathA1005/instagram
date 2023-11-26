@@ -1,17 +1,15 @@
-
 <x-user-layout>
+    <h1>Liste des posts</h1>
+    <ul class="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8">
+        @foreach ($posts as $post)
+            <li>
+                <p>{{ $post->user->name }}</p>
+                <img src="{{ asset($post->user->profile_photo_url) }}" alt="{{ $post->user->name }}'s profile photo">
+                <p><a href="{{ route('posts.show', ['id' => $post->id]) }}">Voir les détails</a></p>
+                <img src="{{ asset($post->image_url) }}" alt="{{ $post->description }}">
+                <p>{{ $post->description }}</p>
 
-    <ul class="grid sm:grid-cols-1 lg:grid-cols-1 2xl:grid-cols-1 justify-center">
-        @foreach($posts as $post)
-            <li class="mb-4"> <!-- Ajout de la classe mb-4 pour l'espace en bas -->
-                <a class="flex bg-white rounded-md shadow-md p-5 mx-auto max-w-screen-md w-full hover:shadow-lg hover:scale-105 transition"
-                   href="#">
 
-                    {{ $post->user->name }}
-                    <br>
-                    {{ $post->image_url }}
-                    {{ $post->description }}
-                </a>
             </li>
         @endforeach
     </ul>

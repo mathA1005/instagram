@@ -26,7 +26,9 @@ Route::get('/dashboard', function () { return view('dashboard');})->middleware([
 Route::middleware(['auth'])->group(function () {
     Route::resource('posts', \App\Http\Controllers\PostController::class)->except(['index', 'show']);
 });
-
+Route::middleware(['auth'])->group(function () {
+    Route::get('/posts/{id}', 'PostController@show')->name('posts.show');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

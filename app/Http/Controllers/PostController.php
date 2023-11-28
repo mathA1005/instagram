@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use Illuminate\Http\Request;
+use Illuminate\Http\Requests;
+use App\Http\Requests\PostStoreRequest;
+use App\Http\Requests\PostUpdateRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Client\Request;
+
 
 class PostController extends Controller
 {
@@ -12,87 +17,122 @@ class PostController extends Controller
      */
     public function index()
     {
-        $articles = Post::orderByDesc('updated_at')
+        $posts = Post::orderByDesc('updated_at')
             ->paginate(10)
         ;
 
         return view(
-            'admin.articles.index',
+            'posts.index',
             [
-                'articles' => $articles,
+                'posts' => $posts,
             ]
         );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
+//     /**
+//      * Show the form for creating a new resource.
+//      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PostRequest $request)
+    public function store(PostStoreRequest $request)
     {
-        // On crée un nouvel ^post
-       /* $posts = Post::make();
-
-        // On ajoute les propriétés de l'article
-        $posts->text = $request->validated()['text'];
-        $posts->user_id = Auth::id();
-
-
-        // Si il y a une image, on la sauvegarde
-        if ($request->hasFile('img')) {
-            $path = $request->file('img')->store('posts', 'public');
-            $posts->img = $path;
-        }
-
-        // On sauvegarde l'article en base de données
-        $posts->save();
-
-        //pas sur de laa redicrection
-        return redirect()->route('feed');*/
+        //dd($request->all());
         $post = Post::make();
         $post->description = $request->validated()['description'];
+        $post->image_url = $request->validated()['image_url'];
+        $post->localisation = $request->validated()['localisation'];
+        $post->date = $request->validated()['date'];
         $post->user_id = Auth::id();
         $post->save();
 
-        return redirect()->route('feed');
+        return redirect()->route('posts.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Post $post)
-    {
-        //
+//     /**
+//      * Display the specified resource.
+//      */
+    public function show($id){
+
+        $post = Post::findOrFail($id);
+
+
+
+
+        // Load the comments for the post, including the associated user
+         $comments = $post->commentaires()
+
+        ->with('user')
+
+            ->orderBy('created_at')
+
+            ->get();
+
+
+        return view('posts.show', [
+
+            'post' => $post,
+
+            'comments' => $comments,
+
+        ]);
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
+    /* Show the form for editing the specified resource.
+    */
     public function edit(Post $post)
     {
-        //
+        return view('posts.edit', compact('post'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Post $post)
+    public function update(PostUpdateRequest $request, Post $post)
     {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Post $post)
+        $post->description = $request->validated()['description'];
+        $post->image_url = $request->validated()['image_url'];
+        $post->localisation = $request->validated()['localisation'];
+        $post->date = $request->validated()['date'];
+        $post->save();
+
+
+        return redirect()->route('posts.index');
+
+    }
+    public function addComment(Request $request, Post $post)
     {
-        //
+        // Ensure that the user is authenticated
+        $request->validate([
+            'content' => 'required|string|max:255',
+        ]);
+
+        // Create a new comment associated with the post
+        $comment = $post->comments()->make();
+
+        // Set the comment body and user_id
+        $comment->body = $request->input('content');
+        $comment->user_id = auth()->user()->id;
+
+        // Save the comment
+        $comment->save();
+
+        // Redirect back to the post
+        return redirect()->back();
     }
 }
+//     /**
+//      * Remove the specified resource from storage.
+//      */
+//     public function destroy(Post $post)
+//     {
+//         //
+//     }
+
+// }

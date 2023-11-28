@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\PostController;
 
 
 /*
@@ -15,20 +16,24 @@ use App\Http\Controllers\HomepageController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-
-Route::get('/', [\App\Http\Controllers\HomepageController::class, 'index']);
-
-Route::middleware(['auth', 'verified'])->get('/feed', [\App\Http\Controllers\FeedController::class, 'feed'])->name('feed');
-
-Route::get('/dashboard', function () { return view('dashboard');})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', [HomepageController::class, 'index']);
+Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
-    Route::resource('posts', \App\Http\Controllers\PostController::class)->except(['index', 'show']);
+    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
+    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+
+    // Comment
+    Route::post('/posts/{post}/comments', [PostController::class, 'addComment'])->name('posts.comments.add');
 });
-Route::middleware(['auth'])->group(function () {
-    Route::get('/posts/{id}', 'PostController@show')->name('posts.show');
-});
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

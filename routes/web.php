@@ -17,9 +17,7 @@ use App\Http\Controllers\PostController;
 |
 */
 Route::get('/', [HomepageController::class, 'index']);
-Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+Route::middleware(['auth', 'verified'])->get('/dashboard', function () {return view('dashboard');})->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
@@ -33,7 +31,9 @@ Route::middleware(['auth'])->group(function () {
     // Comment
     Route::post('/posts/{post}/comments', [PostController::class, 'addComment'])->name('posts.comments.add');
 });
-
+//followers
+Route::post('/follow/{user}', 'FollowController@follow')->name('follow');
+Route::post('/unfollow/{user}', 'FollowController@unfollow')->name('unfollow');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

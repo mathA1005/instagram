@@ -23,6 +23,8 @@
                     <x-text-input id="description" class="block mt-1 w-full" type="text" name="description"
                                   :value="old('description')" autofocus />
                     <x-input-error :messages="$errors->get('description')" class="mt-2" />
+
+
                 </div>
 
                 <div>
@@ -33,15 +35,13 @@
 
                 <div>
                     <x-input-label for="date" :value="__('Date de publication')" />
-                    <x-text-input id="date" class="block mt-1 w-full" type="date" name="date"
-                                  :value="old('date')" />
+                    <x-text-input id="date" class="block mt-1 w-full" type="date" name="date" :value="old('date')" />
                     <x-input-error :messages="$errors->get('date')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-input-label for="image_url" :value="__('URL de l\'image')" />
-                    <x-text-input id="image_url" class="block mt-1 w-full" type="text" name="image_url"
-                                  :value="old('image_url')" />
+                    <x-text-input id="image_url" class="block mt-1 w-full" type="text" name="image_url" :value="old('image_url')" />
                     <x-input-error :messages="$errors->get('image_url')" class="mt-2" />
                 </div>
 

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostStoreRequest extends FormRequest
+class CommentStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,6 +13,7 @@ class PostStoreRequest extends FormRequest
      */
     public function authorize()
     {
+
         return true;
     }
 
@@ -24,11 +25,7 @@ class PostStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'description' => 'required|max:255',
-            'localisation' => 'nullable|string|max:50',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'date' => 'nullable|date',
+            'content' => 'required|max:255',
         ];
     }
 }
-//dans le cours il est dit de créer ArticleCreateRequest mais après il est nommé ArticleStoreRequest ?

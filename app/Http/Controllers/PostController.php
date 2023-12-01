@@ -3,33 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use Illuminate\Http\Requests;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Client\Request;
-
+use App\Http\Requests\CommentStoreRequest;
+use App\Models\Comment;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::orderByDesc('updated_at')
-            ->paginate(10)
-        ;
+        // If there is a search term, apply search filters
+        if ($request->has('search')) {
+            $searchTerm = $request->query('search');
 
-        return view(
-            'posts.index',
-            [
-                'posts' => $posts,
-            ]
-        );
+            // Perform the search on the database
+            $posts = Post::where('description', 'like', '%' . $searchTerm . '%')
+                ->orWhereHas('user', function ($query) use ($searchTerm) {
+                    $query->where('name', 'like', '%' . $searchTerm . '%');
+                })
+                ->orWhere('localisation', 'like', '%' . $searchTerm . '%')
+                ->orderByDesc('updated_at')
+                ->paginate(10);
+        } else {
+            // If no search term, fetch all posts
+            $posts = Post::orderByDesc('updated_at')->paginate(10);
+        }
+
+        return view('posts.index', ['posts' => $posts]);
     }
-
-
 //     /**
 //      * Show the form for creating a new resource.
 //      */
@@ -43,17 +46,23 @@ class PostController extends Controller
      */
     public function store(PostStoreRequest $request)
     {
-        //dd($request->all());
         $post = Post::make();
         $post->description = $request->validated()['description'];
-        $post->image_url = $request->validated()['image_url'];
         $post->localisation = $request->validated()['localisation'];
         $post->date = $request->validated()['date'];
         $post->user_id = Auth::id();
+
+        // Storing the image in the 'posts' directory
+        $path = $request->file('image')->store('posts', 'public');
+
+        // Saving the relative path (without 'public') in the database
+        $post->image_url = 'posts/' . basename($path);
+
         $post->save();
 
         return redirect()->route('posts.index');
     }
+
 
 //     /**
 //      * Display the specified resource.
@@ -66,7 +75,7 @@ class PostController extends Controller
 
 
         // Load the comments for the post, including the associated user
-         $comments = $post->commentaires()
+         $comments = $post->comments()
 
         ->with('user')
 
@@ -95,44 +104,49 @@ class PostController extends Controller
 
     public function update(PostUpdateRequest $request, Post $post)
     {
+        //$this->authorize('updatePost', $post);
 
         $post->description = $request->validated()['description'];
-        $post->image_url = $request->validated()['image_url'];
         $post->localisation = $request->validated()['localisation'];
         $post->date = $request->validated()['date'];
+
+        // Check if a new image is provided
+        if ($request->hasFile('image')) {
+            // Store the new image and update the image_url
+            $path = $request->file('image')->store('posts', 'public');
+            $post->image_url = asset('storage/' . $path);
+        }
+
         $post->save();
 
-
         return redirect()->route('posts.index');
-
     }
-    public function addComment(Request $request, Post $post)
+    public function addComment(CommentStoreRequest $request, Post $post)
     {
-        // Ensure that the user is authenticated
-        $request->validate([
-            'content' => 'required|string|max:255',
+        // Le reste de votre code pour créer et sauvegarder le comment
+        $comment = new Comment([
+            'content' => $request->validated()['content'],
+            'user_id' => Auth::id(),
         ]);
 
-        // Create a new comment associated with the post
-        $comment = $post->comments()->make();
+        $post->comments()->save($comment);
 
-        // Set the comment body and user_id
-        $comment->body = $request->input('content');
-        $comment->user_id = auth()->user()->id;
-
-        // Save the comment
-        $comment->save();
-
-        // Redirect back to the post
-        return redirect()->back();
+        return redirect()->route('posts.show', $post->id);
     }
-}
-//     /**
-//      * Remove the specified resource from storage.
-//      */
-//     public function destroy(Post $post)
-//     {
-//         //
-//     }
 
-// }
+    public function like(Post $post)
+    {
+        auth()->user()->likes()->create(['post_id' => $post->id]);
+
+        return back();
+    }
+
+    public function unlike(Post $post)
+    {
+        auth()->user()->likes()->where('post_id', $post->id)->delete();
+
+        return back();
+    }
+
+}
+

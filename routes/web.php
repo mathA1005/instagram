@@ -30,17 +30,24 @@ Route::middleware(['auth'])->group(function () {
 
     // Comment
     Route::post('/posts/{post}/comments', [PostController::class, 'addComment'])->name('posts.comments.add');
-});
-//followers
-Route::post('/follow/{user}', 'FollowController@follow')->name('follow');
-Route::post('/unfollow/{user}', 'FollowController@unfollow')->name('unfollow');
 
+    // Likes
+    Route::post('/posts/{post}/like', [PostController::class, 'like'])->name('posts.like');
+    Route::delete('/posts/{post}/unlike', [PostController::class, 'unlike'])->name('posts.unlike');
+});
+// Profile
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+// Public profiles
+    Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
+
+    // Follows
+    Route::post('/profile/{user}/follow', [ProfileController::class, 'follow'])->name('profile.follow');
+    Route::post('/profile/{user}/unfollow', [ProfileController::class, 'unfollow'])->name('profile.unfollow');
 });
 
 require __DIR__.'/auth.php';

@@ -21,7 +21,7 @@ class CommentController extends Controller
             'content' => 'required|max:255',
         ]);
 
-        // Création d'un nouveau commentaire
+        // Création d'un nouveau comment
         Comment::create([
             'user_id' => auth()->user()->id,
             'post_id' => $validatedData['post_id'],
@@ -29,8 +29,8 @@ class CommentController extends Controller
         ]);
 
         // Redirection avec un message de succès
-        return redirect()->back()->with('success', 'Commentaire ajouté avec succès.');
+        return redirect()->back()->with('success', 'Comment ajouté avec succès.');
     }
 
-    // Tu peux ajouter d'autres méthodes pour afficher, mettre à jour ou supprimer des commentaires si nécessaire
+    // Tu peux ajouter d'autres méthodes pour afficher, mettre à jour ou supprimer des comments si nécessaire
 }

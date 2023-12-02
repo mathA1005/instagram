@@ -30,8 +30,7 @@
         <!-- Boucle sur chaque post -->
             <li class="w-full max-w-md mx-auto bg-white p-4 rounded-md shadow-md">
                 <a class="block bg-gray-100 rounded-md shadow-md p-2 hover:shadow-lg hover:scale-105 transition" href="{{ route('posts.show', $post) }}">
-                    <!-- Localisation -->
-                    <p class="text-gray-700 text-xs">{{ $post->localisation }}</p>
+
 
                     <!-- Informations sur le post -->
                     <div class="flex items-center justify-between mt-2">
@@ -41,6 +40,8 @@
                             <span class="text-gray-700 ml-2 text-xs">{{ $post->user->name }}</span>
                         </div>
                     </div>
+                    <!-- Localisation -->
+                    <p class="text-gray-700 text-xs  justify-between m-2">{{ $post->localisation }}</p>
                     <!-- Image du post -->
                     <div class="relative overflow-hidden rounded-md aspect-w-16 aspect-h-9 mt-2">
                         <img src="{{ asset('storage/' . $post->image_url) }}" alt="{{ $post->description }}" class="object-cover w-full h-full rounded-md">

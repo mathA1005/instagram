@@ -1,27 +1,29 @@
 <x-user-layout>
-    <div class="flex w-full">
-        <x-avatar class="h-20 w-20" :user="$user" />
+
+    <!-- Profil utilisateur -->
+    <div class="flex w-full bg-gray-200 p-4 rounded-md">
+        <x-avatar class="h-16 w-16" :user="$user" />
         <div class="ml-4 flex flex-col">
-            <div class="text-gray-800 font-bold">{{ $user->name }}</div>
+            <div class="text-gray-900 font-bold text-lg">{{ $user->name }}</div>
             <div class="text-gray-700 text-sm">{{ $user->email }}</div>
             <div class="text-gray-500 text-xs">
                 Membre depuis {{ $user->created_at->diffForHumans() }}
             </div>
 
-            <!-- Follow/Unfollow Button -->
+            <!-- Bouton Follow/Unfollow -->
             @auth
                 @if(auth()->user()->id !== $user->id)
                     @if(auth()->user()->following->contains($user))
                         <form action="{{ route('profile.unfollow', $user) }}" method="post">
                             @csrf
-                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">
+                            <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-md">
                                 Ne plus suivre
                             </button>
                         </form>
                     @else
                         <form action="{{ route('profile.follow', $user) }}" method="post">
                             @csrf
-                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md">
+                            <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded-md">
                                 Suivre
                             </button>
                         </form>
@@ -31,50 +33,45 @@
         </div>
     </div>
 
-    <!-- Profile Post Gallery -->
-    <div class="mt-8">
-        <h2 class="font-bold text-xl mb-4">Articles</h2>
-        <ul class="grid sm:grid-cols-1 lg:grid-cols-1 2xl:grid-cols-2 gap-4 justify-center">
-            @forelse ($posts as $post)
-                <li class="w-full max-w-2xl mx-auto mt-10 bg-white p-8 rounded-md shadow-md"> <!-- Adjust the width here -->
-                    <a class="block bg-white rounded-md shadow-md p-2 hover:shadow-lg hover:scale-105 transition" href="{{ route('posts.show', $post) }}">
-                        <div class="relative overflow-hidden rounded-md aspect-w-1 aspect-h-1">
-                            <img src="{{ asset('storage/' . $post->image_url) }}" alt="{{ $post->description }}" class="object-cover w-full h-full rounded-md">
+    <!-- Galerie d'articles -->
+    <div class="mt-8 space-y-8">
+        <h2 class="font-bold text-2xl mb-4">Articles</h2>
+        @forelse ($posts as $post)
+            <div class="w-full bg-white p-4 rounded-md max-w-md mx-auto">
+                <a class="block bg-gray-100 rounded-md shadow-md p-4 hover:shadow-lg hover:scale-105 transition" href="{{ route('posts.show', $post) }}">
+                    <div class="relative overflow-hidden rounded-md aspect-w-16 aspect-h-9">
+                        <img src="{{ asset('storage/' . $post->image_url) }}" alt="{{ $post->description }}" class="object-cover w-full h-full rounded-md">
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <div class="flex items-center">
+                            <img src="{{ $post->user->avatar }}" alt="{{ $post->user->name }}" class="h-6 w-6 rounded-full">
+                            <span class="text-gray-700 ml-2 text-sm">{{ $post->user->name }}</span>
                         </div>
-                        <div class="flex items-center justify-between mt-2">
-                            <div class="flex items-center">
-                                <!-- You can customize the avatar component here -->
-                                <img src="{{ $post->user->avatar }}" alt="{{ $post->user->name }}" class="h-6 w-6 rounded-full">
-                                <span class="text-gray-700 ml-2 text-sm">{{ $post->user->name }}</span>
-                            </div>
-                            <span class="text-gray-500 text-sm">{{ $post->created_at->diffForHumans() }}</span>
-                        </div>
-                        <p class="text-gray-700 mt-1 text-sm">{{ $post->description }}</p>
-                        <p class="text-gray-700 text-sm">{{ $post->localisation }}</p>
-                        <p class="text-gray-700 text-sm">{{ $post->date }}</p>
-                        <!-- Display Comment Count -->
-                        <p class="text-gray-700 text-sm">{{ $post->comments_count }} {{ Str::plural('Comment', $post->comments_count) }}</p>
-                    </a>
-                </li>
-            @empty
-                <div class="text-gray-700">Aucun article</div>
-            @endforelse
-        </ul>
+                        <span class="text-gray-500 text-sm">{{ $post->created_at->diffForHumans() }}</span>
+                    </div>
+                    <p class="text-gray-700 mt-1 text-sm">{{ $post->description }}</p>
+                    <p class="text-gray-700 text-sm">{{ $post->localisation }}</p>
+                    <p class="text-gray-700 text-sm">{{ $post->date }}</p>
+                    <p class="text-gray-700 text-sm">{{ $post->comments_count }} {{ Str::plural('Comment', $post->comments_count) }}</p>
+                </a>
+            </div>
+        @empty
+            <div class="text-gray-700 bg-gray-200 p-4 rounded-md text-center">Aucun article</div>
+        @endforelse
     </div>
 
-
-
-
-
-    <div class="mt-8">
-        <h2 class="font-bold text-xl mb-4">Comments</h2>
+    <!-- Commentaires -->
+    <div class="mt-8 space-y-8">
+        <h2 class="font-bold text-2xl mb-4">Commentaires</h2>
 
         <div class="flex-col space-y-4">
             @forelse ($comments as $comment)
-                <div class="flex bg-white rounded-md shadow p-4 space-x-4">
+                <div class="w-full bg-gray-200 p-4 rounded-md max-w-md mx-auto">
+                    <!-- Avatar et informations du commentateur -->
                     <div class="flex justify-start items-start h-full">
                         <x-avatar class="h-10 w-10" :user="$comment->user" />
                     </div>
+                    <!-- Contenu du commentaire -->
                     <div class="flex flex-col justify-center w-full space-y-4">
                         <div class="flex justify-between">
                             <div class="flex space-x-4 items-center justify-center">
@@ -85,32 +82,32 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Bouton de suppression du commentaire -->
                             <div class="flex justify-center">
                                 @can('delete', $comment)
                                     <button
                                         x-data="{ id: {{ $comment->id }} }"
                                         x-on:click.prevent="window.selected = id; $dispatch('open-modal', 'confirm-comment-deletion');"
                                         type="submit"
-                                        class="font-bold bg-white text-gray-700 px-4 py-2 rounded shadow"
+                                        class="font-bold bg-gray-200 text-gray-700 px-3 py-1 rounded shadow"
                                     ></button>
                                 @endcan
                             </div>
                         </div>
+                        <!-- Contenu du commentaire -->
                         <div class="flex flex-col justify-center w-full text-gray-700">
-                            <p class="border bg-gray-100 rounded-md p-4">
+                            <p class="border bg-white rounded-md p-4">
                                 {{ $comment->content }}
                             </p>
                         </div>
                     </div>
                 </div>
             @empty
-                <div class="flex bg-white rounded-md shadow p-4 space-x-4">
-                    Aucun comment pour l'instant
-                </div>
+                <div class="flex bg-gray-200 p-4 rounded-md text-center">Aucun commentaire pour l'instant</div>
             @endforelse
         </div>
 
-
+        <!-- Modal de confirmation de suppression du commentaire -->
         <x-modal name="confirm-comment-deletion" focusable>
             <form
                 method="post"
@@ -118,10 +115,10 @@
                 class="p-6"
             >
                 @csrf @method('DELETE')
-                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    Êtes-vous sûr de vouloir supprimer ce comment ?
+                <h2 class="text-lg font-medium text-gray-900">
+                    Êtes-vous sûr de vouloir supprimer ce commentaire ?
                 </h2>
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                <p class="mt-1 text-sm text-gray-600">
                     Cette action est irréversible. Toutes les données seront supprimées.
                 </p>
                 <div class="mt-6 flex justify-end">
@@ -135,4 +132,5 @@
             </form>
         </x-modal>
     </div>
+
 </x-user-layout>

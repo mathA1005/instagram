@@ -18,10 +18,11 @@
 <div class="container mx-auto">
     <div class="flex flex-col items-center space-y-10">
         <nav class="flex justify-between items-center py-4 w-full">
-            <a href="/" class="group font-bold text-4xl flex items-center space-x-4 hover:text-emerald-600 transition">
-                <x-application-logo class="w-10 h-10 fill-current text-gray-500 group-hover:text-emerald-500 transition" />
+            <a href="/" class="group font-bold text-4xl flex items-center space-x-4 hover:text-gray-500 transition">
+                <x-application-logo class="w-10 h-10 fill-current text-gray-500 group-hover:text-gray-500 transition" />
                 <span class="font-serif">InstaMath</span>
             </a>
+
 
             <a href="{{ route('posts.create') }}" class="text-black hover:underline">Créer un post</a>
 

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,6 +22,8 @@
                 <x-application-logo class="w-10 h-10 fill-current text-gray-500 group-hover:text-emerald-500 transition" />
                 <span class="font-serif">InstaMath</span>
             </a>
+
+            <a href="{{ route('posts.create') }}" class="text-black hover:underline">Créer un post</a>
 
             <div class="flex items-center space-x-4">
                 <a href="{{ route('profile.update') }}" class="flex items-center font-medium text-gray-600 hover:text-gray-500 transition">

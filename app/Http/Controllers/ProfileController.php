@@ -13,7 +13,7 @@ use App\Models\User;
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Affiche le formulaire de profil de l'utilisateur.
      */
     public function edit(Request $request): View
     {
@@ -23,35 +23,36 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Met à jour les informations de profil de l'utilisateur.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        //dd($request->all()); // Inspect the entire request
-
+        // Remplit le modèle User avec les données validées du formulaire
         $request->user()->fill($request->validated());
         $request->user()->bio = $request->bio;
 
-        //dd($request->user()); // Inspect the user model before saving
-
+        // Réinitialise la vérification de l'e-mail si l'adresse e-mail change
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
-
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
+    /**
+     * Met à jour l'avatar de l'utilisateur.
+     */
     public function updateAvatar(Request $request): RedirectResponse
     {
-        // Validation de l'image sans passer par une form request
+        // Valide la requête pour s'assurer qu'elle contient un fichier image valide (avatar)
         $request->validate([
             'avatar' => ['required', 'image', 'max:2048'],
         ]);
 
-        // Si l'image est valide, on la sauvegarde
         if ($request->hasFile('avatar')) {
             $user = $request->user();
+            // Stocke le fichier avatar dans le répertoire 'avatars' du stockage public
             $path = $request->file('avatar')->store('avatars', 'public');
             $user->profile_photo = $path;
             $user->save();
@@ -59,46 +60,50 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('status', 'avatar-updated');
     }
+
     /**
-     * Delete the user's account.
+     * Supprime le compte de l'utilisateur.
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Valide le mot de passe actuel lors de la suppression du compte
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);
 
         $user = $request->user();
 
+        // Déconnecte l'utilisateur
         Auth::logout();
 
+        // Supprime le compte utilisateur
         $user->delete();
 
+        // Invalide la session et régénère le jeton CSRF
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
     }
+
+    /**
+     * Affiche le profil de l'utilisateur spécifié avec ses publications et commentaires.
+     */
     public function show(User $user): View
     {
-        // Les articles publiés par l'utilisateur
+        // Récupère les publications de l'utilisateur avec le nombre de commentaires
         $posts = $user
             ->posts()
-            // ->where('published_at', '<', now())
             ->withCount('comments')
             ->orderByDesc('created_at')
-            ->get()
-        ;
+            ->get();
 
-        // Les comments de l'utilisateur triés par date de création
+        // Récupère les commentaires de l'utilisateur
         $comments = $user
             ->comments()
             ->orderByDesc('created_at')
-            ->get()
-        ;
-        //dd($comments);
+            ->get();
 
-        // On renvoie la vue avec les données
         return view('profile.show', [
             'user' => $user,
             'posts' => $posts,
@@ -106,6 +111,10 @@ class ProfileController extends Controller
         ]);
 
     }
+
+    /**
+     * Permet à l'utilisateur authentifié de suivre un autre utilisateur.
+     */
     public function follow(User $user)
     {
         auth()->user()->following()->attach($user);
@@ -113,12 +122,13 @@ class ProfileController extends Controller
         return back();
     }
 
+    /**
+     * Permet à l'utilisateur authentifié de ne plus suivre un autre utilisateur.
+     */
     public function unfollow(User $user)
     {
         auth()->user()->following()->detach($user);
 
         return back();
     }
-
-
 }

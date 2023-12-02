@@ -9,33 +9,86 @@ use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Http\Requests\CommentStoreRequest;
 use App\Models\Comment;
+use Illuminate\Pagination\LengthAwarePaginator; // Ajout de l'import ici
+
 
 class PostController extends Controller
 {
-    public function index(Request $request)
+
+        public function index(Request $request)
     {
-        // If there is a search term, apply search filters
+        // Récupérer l'utilisateur authentifié
+        $user = auth()->user();
+
+        // Récupérer les IDs des utilisateurs suivis par l'utilisateur authentifié
+        $followingIds = $user->following()->pluck('users.id');
+
+        // Si un terme de recherche est présent, appliquer les filtres de recherche
         if ($request->has('search')) {
             $searchTerm = $request->query('search');
 
-            // Perform the search on the database
-            $posts = Post::where('description', 'like', '%' . $searchTerm . '%')
-                ->orWhereHas('user', function ($query) use ($searchTerm) {
-                    $query->where('name', 'like', '%' . $searchTerm . '%');
+            // Effectuer la recherche dans la base de données pour les utilisateurs suivis
+            $postsFollowed = Post::whereIn('user_id', $followingIds)
+                ->where(function ($query) use ($searchTerm) {
+                    $query->whereHas('user', function ($userQuery) use ($searchTerm) {
+                        $userQuery->where('name', 'like', '%' . $searchTerm . '%');
+                    })
+                        ->orWhere('description', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('localisation', 'like', '%' . $searchTerm . '%');
                 })
-                ->orWhere('localisation', 'like', '%' . $searchTerm . '%')
                 ->orderByDesc('updated_at')
-                ->paginate(10);
+                ->get();
+
+            // Effectuer la recherche dans la base de données pour tous les messages
+            $postsAll = Post::where(function ($query) use ($searchTerm) {
+                $query->whereHas('user', function ($userQuery) use ($searchTerm) {
+                    $userQuery->where('name', 'like', '%' . $searchTerm . '%');
+                })
+                    ->orWhere('description', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('localisation', 'like', '%' . $searchTerm . '%');
+            })
+                ->orderByDesc('updated_at')
+                ->get();
         } else {
-            // If no search term, fetch all posts
-            $posts = Post::orderByDesc('updated_at')->paginate(10);
+            // S'il n'y a pas de terme de recherche, récupérer les messages des utilisateurs suivis
+            $postsFollowed = Post::whereIn('user_id', $followingIds)
+                ->orderByDesc('updated_at')
+                ->get();
+
+            // Récupérer tous les messages
+            $postsAll = Post::orderByDesc('updated_at')->get();
         }
 
-        return view('posts.index', ['posts' => $posts]);
+        // Obtenir le nombre d'abonnés pour chaque utilisateur dans $postsAll
+        $userFollowerCounts = collect($postsAll)->groupBy('user_id')->map->count();
+
+        // Trier $postsAll par nombre d'abonnés par ordre décroissant
+        $postsAll = $postsAll->sortByDesc(function ($post) {
+            return $post->likes()->count();
+        });
+
+        // Fusionner les deux ensembles de messages et supprimer les doublons
+        $mergedPosts = $postsFollowed->merge($postsAll)->unique('id');
+
+        // Paginer les messages fusionnés et triés
+        $paginatedPosts = $this->paginateCollection($mergedPosts, 10);
+
+        return view('posts.index', ['posts' => $paginatedPosts]);
     }
-//     /**
-//      * Show the form for creating a new resource.
-//      */
+
+// Méthode d'aide pour paginer une collection
+    private function paginateCollection($items, $perPage)
+    {
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = $items->slice(($currentPage - 1) * $perPage, $perPage)->all();
+
+        return new LengthAwarePaginator($currentItems, count($items), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
+    }
+
+
+
     public function create()
     {
         return view('posts.create');
@@ -64,18 +117,12 @@ class PostController extends Controller
     }
 
 
-//     /**
-//      * Display the specified resource.
-//      */
+
     public function show($id){
 
         $post = Post::findOrFail($id);
 
-
-
-
-        // Load the comments for the post, including the associated user
-         $comments = $post->comments()
+        $comments = $post->comments()
 
         ->with('user')
 
@@ -95,8 +142,7 @@ class PostController extends Controller
     }
 
 
-    /* Show the form for editing the specified resource.
-    */
+
     public function edit(Post $post)
     {
         return view('posts.edit', compact('post'));
@@ -104,26 +150,21 @@ class PostController extends Controller
 
     public function update(PostUpdateRequest $request, Post $post)
     {
-        //$this->authorize('updatePost', $post);
-
         $post->description = $request->validated()['description'];
         $post->localisation = $request->validated()['localisation'];
         $post->date = $request->validated()['date'];
 
-        // Check if a new image is provided
         if ($request->hasFile('image')) {
-            // Store the new image and update the image_url
             $path = $request->file('image')->store('posts', 'public');
             $post->image_url = asset('storage/' . $path);
         }
-
         $post->save();
 
         return redirect()->route('posts.index');
     }
+
     public function addComment(CommentStoreRequest $request, Post $post)
     {
-        // Le reste de votre code pour créer et sauvegarder le comment
         $comment = new Comment([
             'content' => $request->validated()['content'],
             'user_id' => Auth::id(),

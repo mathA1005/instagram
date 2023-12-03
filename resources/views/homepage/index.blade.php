@@ -12,11 +12,12 @@
     </div>
 
 
+    <!-- Section affiche 3 posts aléatoires -->
 
     <div class="grid grid-cols-3 gap-4 mt-8">
         @php
             // Mélanger les posts de manière aléatoire
-            $randomPosts = $posts->shuffle()->take(3);
+         $randomPosts = $posts->shuffle()->take(3);
         @endphp
 
         @forelse($randomPosts as $post)

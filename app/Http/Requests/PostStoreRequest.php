@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class PostStoreRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Détermine si l'utilisateur est autorisé à faire cette demande.
      *
      * @return bool
      */
@@ -17,7 +17,7 @@ class PostStoreRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Obtient les règles de validation applicables à la demande.
      *
      * @return array<string, mixed>
      */
@@ -31,4 +31,3 @@ class PostStoreRequest extends FormRequest
         ];
     }
 }
-//dans le cours il est dit de créer ArticleCreateRequest mais après il est nommé ArticleStoreRequest ?

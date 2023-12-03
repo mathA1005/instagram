@@ -7,18 +7,17 @@ use Illuminate\Foundation\Http\FormRequest;
 class CommentStoreRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Détermine si l'utilisateur est autorisé à faire cette demande.
      *
      * @return bool
      */
     public function authorize()
     {
-
         return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Obtient les règles de validation applicables à la demande.
      *
      * @return array<string, mixed>
      */

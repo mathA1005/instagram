@@ -68,9 +68,9 @@
             @forelse ($comments as $comment)
                 <div class="w-full bg-gray-200 p-4 rounded-md max-w-md mx-auto">
                     <!-- Avatar et informations du commentateur -->
-                    <div class="flex justify-start items-start h-full">
+                    @if ($comment->user)
                         <x-avatar class="h-10 w-10" :user="$comment->user" />
-                    </div>
+                @endif
                     <!-- Contenu du commentaire -->
                     <div class="flex flex-col justify-center w-full space-y-4">
                         <div class="flex justify-between">

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class LikeFactory extends Factory
 {
     /**
-     * Define the model's default state.
+     * Définir l'état par défaut du modèle.
      *
      * @return array<string, mixed>
      */

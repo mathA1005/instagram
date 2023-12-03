@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class CommentFactory extends Factory
 {
     /**
-     * Define the model's default state.
+     * Définir l'état par défaut du modèle.
      *
      * @return array<string, mixed>
      */

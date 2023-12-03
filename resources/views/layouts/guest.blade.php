@@ -17,6 +17,7 @@
 
 <body class="font-sans text-gray-900 antialiased">
     <div class="container mx-auto flex flex-col space-y-10">
+        <!-- Barre de navigation -->
         <nav class="flex justify-between items-center py-2">
             <div>
                 <a href="/" class="group font-bold text-4xl flex items-center space-x-4 hover:text-gray-500 transition">
@@ -25,6 +26,7 @@
                 </a>
 
             </div>
+            <!-- Liens de connexion et inscription -->
             <div class="flex items-center space-x-4">
                     <a href="{{ route('login') }}"
                        class="font-medium text-gray-600 hover:text-gray-500 transition">Login</a>
@@ -34,14 +36,13 @@
 
 
         </nav>
-
+        <!-- Contenu principal de la page -->
         <main>
             <div class="grid grid-cols-1">
                 {{ $slot }}
             </div>
         </main>
     </div>
-</div>
 </body>
 
 </html>

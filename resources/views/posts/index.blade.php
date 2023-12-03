@@ -25,7 +25,7 @@
     <h1>Liste des posts</h1>
 
     <!-- Liste des posts -->
-    <ul class="grid sm:grid-cols-1 lg:grid-cols-1 2xl:grid-cols-3 gap-8 justify-center">
+    <ul class="grid sm:grid-cols-1 lg:grid-cols-1 gap-8 justify-center">
     @forelse($posts as $post)
         <!-- Boucle sur chaque post -->
             <li class="w-full max-w-md mx-auto bg-white p-4 rounded-md shadow-md">

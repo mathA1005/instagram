@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class PostUpdateRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Détermine si l'utilisateur est autorisé à faire cette demande.
      */
     public function authorize(): bool
     {
@@ -14,7 +14,7 @@ class PostUpdateRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Obtient les règles de validation applicables à la demande.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */

@@ -25,10 +25,6 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
 Ce document fournit les étapes nécessaires pour installer et configurer votre projet. Suivez ces instructions pour mettre en place l'environnement de développement.
 
 
-# Installation de [Instragram]
-
-
-## Étapes d'installation
 ## Prérequis
 
 - Avoir Git installé sur votre machine
@@ -36,6 +32,7 @@ Ce document fournit les étapes nécessaires pour installer et configurer votre 
 - PHP >= 8.2
 - Une base de données (MySQL, SQLite,..)
 
+# Installation et Configuration du Projet
 
 1. **Cloner le Projet GitHub**
 

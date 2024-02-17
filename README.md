@@ -22,6 +22,14 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
 
+2. **Installer les dépendances**
+
+Dans le dossier du projet, installez les dépendances avec Composer :
+
+```bash
+cd NomDuProjet
+composer install
+
 
 
 

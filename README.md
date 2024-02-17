@@ -22,13 +22,6 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
 
-2. **Installer les dépendances**
-
-Dans le dossier du projet, installez les dépendances avec Composer :
-
-```bash
-cd NomDuProjet
-composer install
 
 
 
@@ -69,7 +62,7 @@ Générez une nouvelle clé d'application Laravel : php artisan key:generate
 
 5. **Lancer les migrations (et les seeders si nécessaire)**
 
-Créez les tables dans votre base de données et peuplez-les avec des données initiales (si vous avez des seeders) : php artisan migrate --seed
+Créez les tables dans votre base de données et peuplez-les avec des données initiales (si vous avez des seeders) :   `php artisan migrate --seed`
 
 
 6. **Lancer le serveur de développement**

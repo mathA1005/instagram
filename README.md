@@ -21,6 +21,58 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+
+
+
+
+# Installation de [Instragram]
+
+Ce guide vous aidera à installer et à configurer [NomDuProjet]. Suivez attentivement les étapes ci-dessous.
+
+## Prérequis
+
+Avant de commencer, assurez-vous d'avoir installé les éléments suivants sur votre système :
+
+- PHP >= 8.2
+- Composer
+- Une base de données (MySQL, SQLite,..)
+
+## Étapes d'installation
+
+1. **Cloner le dépôt**
+
+   Ouvrez un terminal et exécutez la commande suivante pour cloner le dépôt git :
+
+2. **Installer les dépendances**
+
+Naviguez dans le dossier du projet cloné et installez les dépendances PHP avec Composer :
+cd Instragram
+composer install
+
+3. **Configurer l'environnement**
+
+Copiez le fichier `.env.example` en un nouveau fichier nommé `.env` :
+
+Ouvrez le fichier `.env` avec votre éditeur de texte préféré et configurez les paramètres de votre base de données.
+
+4. **Générer une clé d'application**
+
+Générez une nouvelle clé d'application Laravel : php artisan key:generate
+
+5. **Lancer les migrations (et les seeders si nécessaire)**
+
+Créez les tables dans votre base de données et peuplez-les avec des données initiales (si vous avez des seeders) : php artisan migrate --seed
+
+
+6. **Lancer le serveur de développement**
+
+Démarrez le serveur de développement intégré de Laravel : php run dev
+
+
+
+
+
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
